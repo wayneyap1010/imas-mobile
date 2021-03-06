@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert' as convert;
-
-import 'package:imas/controller/controller.dart';
 import 'package:imas/network_utils/api.dart';
 import 'package:imas/screen/home_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -169,16 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   elevation: 5.0,
                   onPressed: () async {
                     _login();
-                    // Controller().login(
-                    //   context,
-                    //   emailController.text,
-                    //   passwordController.text,
-                    // );
-                    // authenticationController().login(
-                    //   context,
-                    //   userNameController.text,
-                    //   passwordController.text,
-                    // );
                   },
                   padding: EdgeInsets.all(15.0),
                   shape: RoundedRectangleBorder(
@@ -275,6 +263,7 @@ class _LoginScreenState extends State<LoginScreen> {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', jsonEncode(body['token']));
       localStorage.setString('user', jsonEncode(body['user']));
+      print(jsonEncode(body['user']));
       Navigator.push(
         context,
         new MaterialPageRoute(builder: (context) => HomeScreen()),

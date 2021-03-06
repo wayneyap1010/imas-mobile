@@ -1,6 +1,13 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:imas/network_utils/api.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slide_digital_clock/slide_digital_clock.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:imas/controller/clock_controller.dart';
+
+import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -38,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         title: Text('IMAS'),
         backgroundColor: Colors.lightBlue,
+        automaticallyImplyLeading: false,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -78,6 +86,23 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                           color: Colors.lightBlueAccent,
                           onPressed: () {
+                            setState(() {
+                              ClockController().clock_in();
+                            });
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MaterialButton(
+                          minWidth: double.infinity,
+                          height: 50.0,
+                          child: Text(
+                            'Clock Out',
+                            style: TextStyle(fontSize: 25.0),
+                          ),
+                          color: Colors.lightBlueAccent,
+                          onPressed: () {
                             setState(() {});
                           },
                         ),
@@ -94,6 +119,21 @@ class _HomeScreenState extends State<HomeScreen> {
                           color: Colors.lightBlueAccent,
                           onPressed: () {
                             getLocation();
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: MaterialButton(
+                          minWidth: double.infinity,
+                          height: 50.0,
+                          child: Text(
+                            'Logout',
+                            style: TextStyle(fontSize: 25.0),
+                          ),
+                          color: Colors.lightBlueAccent,
+                          onPressed: () {
+                            logout();
                           },
                         ),
                       ),
@@ -157,5 +197,17 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  void logout() async {
+    var res = await Network().getData('/logout');
+    var body = jsonDecode(res.body);
+    if (body['success']) {
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.remove('user');
+      localStorage.remove('token');
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginScreen()));
+    }
   }
 }

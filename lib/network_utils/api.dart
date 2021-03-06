@@ -14,7 +14,7 @@ class Network {
 
   authData(data, apiUrl) async {
     var fullUrl = _url + apiUrl;
-    print(fullUrl);
+
     return await http.post(fullUrl,
         body: jsonEncode(data), headers: _setHeaders());
   }
@@ -22,6 +22,7 @@ class Network {
   getData(apiUrl) async {
     var fullUrl = _url + apiUrl;
     await _getToken();
+
     return await http.get(fullUrl, headers: _setHeaders());
   }
 
@@ -30,4 +31,20 @@ class Network {
         'Accept': 'application/json',
         'Authorization': 'Bearer $token'
       };
+
+  apiClock(data, apiUrl) async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+
+    data['email'] = jsonDecode(localStorage.getString('user'))['email'];
+
+    var fullUrl = _url + apiUrl;
+    // print(fullUrl);
+    final http.Response response = await http.post(fullUrl,
+        body: jsonEncode(data), headers: _setHeaders());
+    // print(response);
+
+    return response;
+    // return await http.post(fullUrl,
+    //     body: jsonEncode(data), headers: _setHeaders());
+  }
 }

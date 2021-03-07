@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:slide_digital_clock/slide_digital_clock.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:imas/controller/clock_controller.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import 'login_screen.dart';
 
@@ -85,10 +86,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(fontSize: 25.0),
                           ),
                           color: Colors.lightBlueAccent,
-                          onPressed: () {
-                            setState(() {
-                              ClockController().clock_in();
-                            });
+                          onPressed: () async {
+                            var status = await ClockController().clock('in');
+                            _alertBox(status['success'], status['msg']);
                           },
                         ),
                       ),
@@ -102,23 +102,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             style: TextStyle(fontSize: 25.0),
                           ),
                           color: Colors.lightBlueAccent,
-                          onPressed: () {
-                            setState(() {});
-                          },
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: MaterialButton(
-                          minWidth: double.infinity,
-                          height: 50.0,
-                          child: Text(
-                            'Location',
-                            style: TextStyle(fontSize: 25.0),
-                          ),
-                          color: Colors.lightBlueAccent,
-                          onPressed: () {
-                            getLocation();
+                          onPressed: () async {
+                            var status = await ClockController().clock('out');
+                            _alertBox(status['success'], status['msg']);
                           },
                         ),
                       ),
@@ -131,48 +117,111 @@ class _HomeScreenState extends State<HomeScreen> {
                             'Logout',
                             style: TextStyle(fontSize: 25.0),
                           ),
-                          color: Colors.lightBlueAccent,
+                          color: Colors.redAccent,
                           onPressed: () {
                             logout();
                           },
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          color: Colors.red,
-                          width: double.infinity,
-                          child: Column(children: <Widget>[
-                            Container(
-                              child: Text('Longitude'),
-                            ),
-                            Container(
-                              child: Text(
-                                'test',
-                                // location['longitude'].toString(),
-                                // style: TextStyle(fontSize: 30),
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          color: Colors.red,
-                          width: double.infinity,
-                          child: Column(children: <Widget>[
-                            Container(
-                              child: Text('Latitude'),
-                            ),
-                            Container(
-                              child: Text(
-                                'test',
-                                // location['latitude'].toString(),
-                                // style: TextStyle(fontSize: 30),
-                              ),
-                            ),
-                          ]),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: MaterialButton(
+                      //     minWidth: double.infinity,
+                      //     height: 50.0,
+                      //     child: Text(
+                      //       'Location',
+                      //       style: TextStyle(fontSize: 25.0),
+                      //     ),
+                      //     color: Colors.lightBlueAccent,
+                      //     onPressed: () {
+                      //       getLocation();
+                      //     },
+                      //   ),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Container(
+                      //     color: Colors.red,
+                      //     width: double.infinity,
+                      //     child: Column(children: <Widget>[
+                      //       Container(
+                      //         child: Text('Longitude'),
+                      //       ),
+                      //       Container(
+                      //         child: Text(
+                      //           'test',
+                      //           // location['longitude'].toString(),
+                      //           // style: TextStyle(fontSize: 30),
+                      //         ),
+                      //       ),
+                      //     ]),
+                      //   ),
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.all(8.0),
+                      //   child: Container(
+                      //     color: Colors.red,
+                      //     width: double.infinity,
+                      //     child: Column(children: <Widget>[
+                      //       Container(
+                      //         child: Text('Latitude'),
+                      //       ),
+                      //       Container(
+                      //         child: Text(
+                      //           'test',
+                      //           // location['latitude'].toString(),
+                      //           // style: TextStyle(fontSize: 30),
+                      //         ),
+                      //       ),
+                      //     ]),
+                      //   ),
+                      // ),
+                      Container(
+                        margin: EdgeInsets.all(20),
+                        child: Table(
+                          defaultColumnWidth: FixedColumnWidth(120.0),
+                          border: TableBorder.all(
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                              width: 2),
+                          children: [
+                            TableRow(children: [
+                              Column(children: [
+                                Text('Date', style: TextStyle(fontSize: 20.0))
+                              ]),
+                              Column(children: [
+                                Text('Time', style: TextStyle(fontSize: 20.0))
+                              ]),
+                              Column(children: [
+                                Text('Clock', style: TextStyle(fontSize: 20.0))
+                              ]),
+                            ]),
+                            TableRow(children: [
+                              Column(children: [Text('05-03-2020')]),
+                              Column(children: [Text('09:00:00')]),
+                              Column(children: [Text('in')]),
+                            ]),
+                            TableRow(children: [
+                              Column(children: [Text('05-03-2020')]),
+                              Column(children: [Text('18:00:00')]),
+                              Column(children: [Text('out')]),
+                            ]),
+                            TableRow(children: [
+                              Column(children: [Text('06-03-2020')]),
+                              Column(children: [Text('08:57:00')]),
+                              Column(children: [Text('in')]),
+                            ]),
+                            TableRow(children: [
+                              Column(children: [Text('06-03-2020')]),
+                              Column(children: [Text('16:20:00')]),
+                              Column(children: [Text('out')]),
+                            ]),
+                            TableRow(children: [
+                              Column(children: [Text('07-03-2020')]),
+                              Column(children: [Text('08:54:20')]),
+                              Column(children: [Text('in')]),
+                            ]),
+                          ],
                         ),
                       ),
                     ],
@@ -209,5 +258,26 @@ class _HomeScreenState extends State<HomeScreen> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => LoginScreen()));
     }
+  }
+
+  _alertBox(success, msg) {
+    return Alert(
+      context: context,
+      type: success == true ? AlertType.success : AlertType.error,
+      title: msg,
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Okay",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+        )
+      ],
+    ).show();
   }
 }

@@ -38,10 +38,8 @@ class Network {
     data['email'] = jsonDecode(localStorage.getString('user'))['email'];
 
     var fullUrl = _url + apiUrl;
-    // print(fullUrl);
     final http.Response response = await http.post(fullUrl,
         body: jsonEncode(data), headers: _setHeaders());
-    // print(response);
 
     return response;
     // return await http.post(fullUrl,

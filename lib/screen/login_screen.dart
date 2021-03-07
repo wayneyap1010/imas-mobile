@@ -2,9 +2,11 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:convert' as convert;
 import 'package:imas/network_utils/api.dart';
 import 'package:imas/screen/home_screen.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -192,58 +194,68 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
 //        backgroundColor: Colors.red,
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(new FocusNode());
-        },
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: new BoxDecoration(
-            gradient: new LinearGradient(
-                colors: [Colors.lightBlueAccent, Colors.white],
-                begin: const FractionalOffset(0.0, 0.0),
-                end: const FractionalOffset(0.0, 1.5),
-                stops: [0.0, 1.0],
-                tileMode: TileMode.clamp),
-          ),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.all(40.0),
-                child: Column(
-                  children: [
-                    Text(
-                      'IMAS',
-                      style: TextStyle(
-                        fontSize: 50.0,
-                      ),
+      body: Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              FocusScope.of(context).requestFocus(new FocusNode());
+            },
+            child: Container(
+              height: double.infinity,
+              width: double.infinity,
+              decoration: new BoxDecoration(
+                gradient: new LinearGradient(
+                    colors: [Colors.lightBlueAccent, Colors.white],
+                    begin: const FractionalOffset(0.0, 0.0),
+                    end: const FractionalOffset(0.0, 1.5),
+                    stops: [0.0, 1.0],
+                    tileMode: TileMode.clamp),
+              ),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(40.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          'IMAS',
+                          style: TextStyle(
+                            fontSize: 50.0,
+                          ),
+                        ),
+                        // logo(),
+                        SizedBox(height: 60.0),
+                        loginLegendText('Email'),
+                        SizedBox(height: 10.0),
+                        loginEmailTF(),
+                        SizedBox(height: 30.0),
+                        loginLegendText('Password'),
+                        SizedBox(height: 10.0),
+                        loginPasswordTF(),
+                        SizedBox(height: 5.0),
+                        // rememberMeCB(),
+                        loginBT(),
+                        Text(
+                          'IMAS V1.0.1',
+                          style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
                     ),
-                    // logo(),
-                    SizedBox(height: 60.0),
-                    loginLegendText('Email'),
-                    SizedBox(height: 10.0),
-                    loginEmailTF(),
-                    SizedBox(height: 30.0),
-                    loginLegendText('Password'),
-                    SizedBox(height: 10.0),
-                    loginPasswordTF(),
-                    SizedBox(height: 5.0),
-                    // rememberMeCB(),
-                    loginBT(),
-                    Text(
-                      'IMAS V1.0.1',
-                      style: TextStyle(
-                        fontStyle: FontStyle.italic,
-                        decoration: TextDecoration.underline,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
+          _isLoading
+              ? SpinKitDualRing(
+                  color: Colors.white70,
+                  size: 100.0,
+                )
+              : Stack(),
+        ],
       ),
     );
   }
@@ -269,11 +281,32 @@ class _LoginScreenState extends State<LoginScreen> {
         new MaterialPageRoute(builder: (context) => HomeScreen()),
       );
     } else {
-      _showMsg(body['message']);
+      _alertBox('error', body['message']);
     }
 
     setState(() {
       _isLoading = false;
     });
+  }
+
+  _alertBox(success, msg) {
+    return Alert(
+      context: context,
+      type: success == true ? AlertType.success : AlertType.error,
+      title: msg,
+      buttons: [
+        DialogButton(
+          child: Text(
+            "Okay",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
+          onPressed: () => Navigator.pop(context),
+          width: 120,
+        )
+      ],
+    ).show();
   }
 }

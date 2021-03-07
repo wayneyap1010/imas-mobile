@@ -7,6 +7,8 @@ import 'package:slide_digital_clock/slide_digital_clock.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:imas/controller/clock_controller.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+import 'dart:ui';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 import 'login_screen.dart';
 
@@ -22,6 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   var location;
+  bool _isLoading = false;
 
   getLocation() async {
     await Geolocator.getCurrentPosition(
@@ -45,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('IMAS'),
-        backgroundColor: Colors.lightBlue,
+        backgroundColor: Colors.blue,
         automaticallyImplyLeading: false,
       ),
       body: Stack(
@@ -54,8 +57,19 @@ class _HomeScreenState extends State<HomeScreen> {
             decoration: new BoxDecoration(
                 image: new DecorationImage(
                     fit: BoxFit.cover,
+                    // TODO: download the image and use local
                     image: new NetworkImage(
                         'https://images.unsplash.com/photo-1548032885-b5e38734688a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHw%3D&w=1000&q=80'))),
+          ),
+          ClipRRect(
+            // Clip it cleanly.
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+              child: Container(
+                color: Colors.grey.withOpacity(0.1),
+                alignment: Alignment.center,
+              ),
+            ),
           ),
           SingleChildScrollView(
             child: Padding(
@@ -63,9 +77,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 children: [
                   Card(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withOpacity(0.7),
                     child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16.0, 5.0, 16.0, 5.0),
+                      padding: const EdgeInsets.fromLTRB(20.0, 5.0, 20.0, 5.0),
                       child: DigitalClock(
                         digitAnimationStyle: Curves.elasticOut,
                         is24HourTimeFormat: false,
@@ -91,171 +105,157 @@ class _HomeScreenState extends State<HomeScreen> {
                       ),
                     ),
                   ),
-                  Card(
-                    color: Colors.white.withOpacity(0.8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 5.0),
-                          child: Text(
-                            'Welcome',
-                            style: TextStyle(fontSize: 30.0),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 5.0),
+                        child: Text(
+                          'Welcome',
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            color: Colors.white,
                           ),
                         ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                          child: Text(
-                            'Tan Yap Feng',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontSize: 30.0,
-                              fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
-                              decoration: TextDecoration.underline,
-                            ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                        child: Text(
+                          'Tan Yap Feng',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 30.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontStyle: FontStyle.italic,
+                            decoration: TextDecoration.underline,
                           ),
                         ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 5.0),
-                          child: MaterialButton(
-                            minWidth: double.infinity,
-                            height: 70.0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Spacer(flex: 10),
-                                Icon(
-                                  Icons.work,
-                                  size: 50.0,
-                                ),
-                                Spacer(flex: 1),
-                                Text(
-                                  'Clock In',
-                                  style: TextStyle(fontSize: 25.0),
-                                ),
-                                Spacer(flex: 10),
-                              ],
-                            ),
-                            color: Colors.teal,
-                            onPressed: () async {
-                              var status = await ClockController().clock('in');
-                              _alertBox(status['success'], status['msg']);
-                            },
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 5.0),
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
                           ),
-                        ),
-                        Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 18.0),
-                          child: MaterialButton(
-                            minWidth: double.infinity,
-                            height: 70.0,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Spacer(flex: 10),
-                                Icon(
-                                  Icons.work_off,
-                                  size: 50.0,
-                                ),
-                                Spacer(flex: 1),
-                                Text(
-                                  'Clock Out',
-                                  style: TextStyle(fontSize: 25.0),
-                                ),
-                                Spacer(flex: 10),
-                              ],
-                            ),
-                            color: Colors.red,
-                            onPressed: () async {
-                              var status = await ClockController().clock('out');
-                              _alertBox(status['success'], status['msg']);
-                            },
+                          minWidth: double.infinity,
+                          height: 70.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Spacer(flex: 10),
+                              Icon(
+                                Icons.work,
+                                size: 50.0,
+                              ),
+                              Spacer(flex: 1),
+                              Text(
+                                'Clock In',
+                                style: TextStyle(fontSize: 25.0),
+                              ),
+                              Spacer(flex: 10),
+                            ],
                           ),
+                          color: Colors.teal.withOpacity(0.9),
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            var status = await ClockController().clock('in');
+                            setState(() {
+                              status['success']
+                                  ? _isLoading = false
+                                  : _isLoading = false;
+                            });
+                            _alertBox(status['success'], status['msg']);
+                          },
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.all(8.0),
-                        //   child: MaterialButton(
-                        //     minWidth: double.infinity,
-                        //     height: 50.0,
-                        //     child: Text(
-                        //       'Logout',
-                        //       style: TextStyle(fontSize: 25.0),
-                        //     ),
-                        //     color: Colors.redAccent,
-                        //     onPressed: () {
-                        //       logout();
-                        //     },
-                        //   ),
-                        // ),
-                        // Padding(
-                        //   padding: const EdgeInsets.all(8.0),
-                        //   child: MaterialButton(
-                        //     minWidth: double.infinity,
-                        //     height: 50.0,
-                        //     child: Text(
-                        //       'Location',
-                        //       style: TextStyle(fontSize: 25.0),
-                        //     ),
-                        //     color: Colors.lightBlueAccent,
-                        //     onPressed: () {
-                        //       getLocation();
-                        //     },
-                        //   ),
-                        // ),
-                        // Padding(
-                        //   padding: const EdgeInsets.all(8.0),
-                        //   child: Container(
-                        //     color: Colors.red,
-                        //     width: double.infinity,
-                        //     child: Column(children: <Widget>[
-                        //       Container(
-                        //         child: Text('Longitude'),
-                        //       ),
-                        //       Container(
-                        //         child: Text(
-                        //           'test',
-                        //           // location['longitude'].toString(),
-                        //           // style: TextStyle(fontSize: 30),
-                        //         ),
-                        //       ),
-                        //     ]),
-                        //   ),
-                        // ),
-                        // Padding(
-                        //   padding: const EdgeInsets.all(8.0),
-                        //   child: Container(
-                        //     color: Colors.red,
-                        //     width: double.infinity,
-                        //     child: Column(children: <Widget>[
-                        //       Container(
-                        //         child: Text('Latitude'),
-                        //       ),
-                        //       Container(
-                        //         child: Text(
-                        //           'test',
-                        //           // location['latitude'].toString(),
-                        //           // style: TextStyle(fontSize: 30),
-                        //         ),
-                        //       ),
-                        //     ]),
-                        //   ),
-                        // ),
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding:
+                            const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 18.0),
+                        child: MaterialButton(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(15.0),
+                          ),
+                          minWidth: double.infinity,
+                          height: 70.0,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Spacer(flex: 10),
+                              Icon(
+                                Icons.work_off,
+                                size: 50.0,
+                              ),
+                              Spacer(flex: 1),
+                              Text(
+                                'Clock Out',
+                                style: TextStyle(fontSize: 25.0),
+                              ),
+                              Spacer(flex: 10),
+                            ],
+                          ),
+                          color: Colors.red.withOpacity(0.9),
+                          onPressed: () async {
+                            setState(() {
+                              _isLoading = true;
+                            });
+                            var status = await ClockController().clock('out');
+                            setState(() {
+                              status['success']
+                                  ? _isLoading = false
+                                  : _isLoading = false;
+                            });
+                            _alertBox(status['success'], status['msg']);
+                          },
+                        ),
+                      ),
+                      // Padding(
+                      //   padding:
+                      //       const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 18.0),
+                      //   child: MaterialButton(
+                      //     minWidth: double.infinity,
+                      //     height: 70.0,
+                      //     child: Row(
+                      //       mainAxisAlignment: MainAxisAlignment.center,
+                      //       children: [
+                      //         Spacer(flex: 10),
+                      //         Icon(
+                      //           Icons.work_off,
+                      //           size: 50.0,
+                      //         ),
+                      //         Spacer(flex: 1),
+                      //         Text(
+                      //           'retrieve monthly history',
+                      //           style: TextStyle(fontSize: 25.0),
+                      //         ),
+                      //         Spacer(flex: 10),
+                      //       ],
+                      //     ),
+                      //     color: Colors.red,
+                      //     onPressed: () async {
+                      //       // var status = await Network().apiMonthlyHistory();
+                      //       // print(status['data']);
+                      //       // _monthlyHistory();
+                      //     },
+                      //   ),
+                      // ),
+                    ],
                   ),
                   Card(
-                    color: Colors.white.withOpacity(0.8),
+                    color: Colors.white.withOpacity(0.6),
                     child: Column(
+                      mainAxisSize: MainAxisSize.min,
                       children: [
                         Padding(
                           padding:
-                              const EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 5.0),
+                              const EdgeInsets.fromLTRB(20.0, 18.0, 20.0, 5.0),
                           child: Text(
-                            'History',
+                            'Monthly History',
                             style: TextStyle(fontSize: 30.0),
                           ),
                         ),
@@ -311,6 +311,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: MaterialButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15.0),
+                      ),
+                      minWidth: double.infinity,
+                      height: 50.0,
+                      child: Text(
+                        'Logout',
+                        style: TextStyle(fontSize: 25.0),
+                      ),
+                      color: Colors.redAccent,
+                      onPressed: () {
+                        logout();
+                      },
+                    ),
+                  ),
                   // Container(
                   //   width: double.infinity,
                   //   child: Card(
@@ -324,10 +342,17 @@ class _HomeScreenState extends State<HomeScreen> {
                   //     ),
                   //   ),
                   // ),
+                  // _monthlyHistory(),
                 ],
               ),
             ),
           ),
+          _isLoading
+              ? SpinKitDualRing(
+                  color: Colors.white70,
+                  size: 100.0,
+                )
+              : Stack(),
         ],
       ),
     );
@@ -336,6 +361,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void logout() async {
     var res = await Network().getData('/logout');
     var body = jsonDecode(res.body);
+    print(body);
     if (body['success']) {
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.remove('user');
@@ -364,5 +390,65 @@ class _HomeScreenState extends State<HomeScreen> {
         )
       ],
     ).show();
+  }
+
+  _monthlyHistory() {
+    return _monthlyHistoryData();
+  }
+
+  _monthlyHistoryData() async {
+    var result = await Network().apiMonthlyHistory();
+    // result['data'].forEach((element) {
+    //   print(element);
+    // });
+    // return result['data'];
+
+    Card data = Card(
+      color: Colors.white.withOpacity(0.6),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20.0, 18.0, 20.0, 5.0),
+            child: Text(
+              'Monthly History',
+              style: TextStyle(fontSize: 30.0),
+            ),
+          ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 26.0),
+            child: DataTable(
+              columns: [
+                DataColumn(
+                    label: Text('Date',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold))),
+                DataColumn(
+                    label: Text('Time',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold))),
+                DataColumn(
+                    label: Text('Clock',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold))),
+              ],
+              rows: [
+                result['data'].forEach((element) {
+                  print(element);
+
+                  DataRow(cells: [
+                    DataCell(Text(element['mobile_date'])),
+                    DataCell(Text(element['mobile_time'])),
+                    DataCell(Text(element['clock'])),
+                  ]);
+                }),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+
+    return data;
   }
 }

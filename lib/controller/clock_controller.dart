@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:imas/network_utils/api.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,7 +15,6 @@ class ClockController {
     String dateNow = DateFormat('yyyy-MM-dd').format(now);
     String timeNow = DateFormat('kk:mm:ss').format(now);
 
-    // TODO: add spinkit while loading
     Position position = await getLocation();
     String encodedPosition = jsonEncode(position);
     Map<String, dynamic> arrData = jsonDecode(encodedPosition);
@@ -36,7 +34,7 @@ class ClockController {
     arrData['area'] = placemark.subLocality;
     arrData['street_name'] = placemark.thoroughfare;
 
-    var res = await Network().apiClock(arrData, '/clockin');
+    var res = await Network().apiClock(arrData, '/clock');
     var body = jsonDecode(res.body);
     // print(body);
 

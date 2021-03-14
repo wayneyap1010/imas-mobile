@@ -9,7 +9,7 @@ import 'package:imas/controller/clock_controller.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:ui';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'test.dart';
+import 'jsonDatatableSample.dart';
 
 import 'login_screen.dart';
 
@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('IMAS'),
+        title: Text('Intelligence Mobile Attendance System'),
         backgroundColor: Colors.deepOrangeAccent,
         automaticallyImplyLeading: false,
       ),
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Spacer(flex: 10),
                               Icon(
-                                Icons.work,
+                                Icons.work_outline,
                                 size: 50.0,
                               ),
                               Spacer(flex: 1),
@@ -190,7 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             children: [
                               Spacer(flex: 10),
                               Icon(
-                                Icons.work_off,
+                                Icons.work_off_outlined,
                                 size: 50.0,
                               ),
                               Spacer(flex: 1),

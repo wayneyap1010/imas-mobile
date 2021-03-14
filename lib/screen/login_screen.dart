@@ -8,6 +8,7 @@ import 'package:imas/network_utils/api.dart';
 import 'package:imas/screen/home_screen.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -205,7 +206,7 @@ class _LoginScreenState extends State<LoginScreen> {
               width: double.infinity,
               decoration: new BoxDecoration(
                 gradient: new LinearGradient(
-                    colors: [Colors.lightBlueAccent, Colors.white],
+                    colors: [Colors.orange, Colors.white],
                     begin: const FractionalOffset(0.0, 0.0),
                     end: const FractionalOffset(0.0, 1.5),
                     stops: [0.0, 1.0],
@@ -217,11 +218,15 @@ class _LoginScreenState extends State<LoginScreen> {
                     padding: const EdgeInsets.all(40.0),
                     child: Column(
                       children: [
+                        Container(
+                          child: Image(
+                            width: 200.0,
+                            image: AssetImage('images/imas-logo.png'),
+                          ),
+                        ),
                         Text(
                           'IMAS',
-                          style: TextStyle(
-                            fontSize: 50.0,
-                          ),
+                          style: GoogleFonts.mcLaren(fontSize: 50.0),
                         ),
                         // logo(),
                         SizedBox(height: 60.0),
@@ -235,13 +240,13 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(height: 5.0),
                         // rememberMeCB(),
                         loginBT(),
-                        Text(
-                          'IMAS V1.0.1',
-                          style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
+                        // Text(
+                        //   'IMAS V1.0.1',
+                        //   style: TextStyle(
+                        //     fontStyle: FontStyle.italic,
+                        //     decoration: TextDecoration.underline,
+                        //   ),
+                        // ),
                       ],
                     ),
                   ),

@@ -9,6 +9,7 @@ import 'package:imas/controller/clock_controller.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'dart:ui';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'test.dart';
 
 import 'login_screen.dart';
 
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text('IMAS'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.deepOrangeAccent,
         automaticallyImplyLeading: false,
       ),
       body: Stack(
@@ -56,10 +57,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             decoration: new BoxDecoration(
                 image: new DecorationImage(
-                    fit: BoxFit.cover,
-                    // TODO: download the image and use local
-                    image: new NetworkImage(
-                        'https://images.unsplash.com/photo-1548032885-b5e38734688a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHw%3D&w=1000&q=80'))),
+              fit: BoxFit.cover,
+              // image: new NetworkImage(
+              //     'https://images.unsplash.com/photo-1548032885-b5e38734688a?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHw%3D&w=1000&q=80'),
+              image: AssetImage('images/quote_image.jpg'),
+            )),
           ),
           ClipRRect(
             // Clip it cleanly.
@@ -238,9 +240,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       //     ),
                       //     color: Colors.red,
                       //     onPressed: () async {
+                      //       Navigator.push(
+                      //         context,
+                      //         MaterialPageRoute(builder: (context) => Test()),
+                      //       );
                       //       // var status = await Network().apiMonthlyHistory();
                       //       // print(status['data']);
-                      //       // _monthlyHistory();
+                      //       // setState(() {
+                      //       //   _monthlyHistory();
+                      //       // });
                       //     },
                       //   ),
                       // ),
@@ -261,53 +269,75 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         Container(
                           margin: EdgeInsets.symmetric(horizontal: 26.0),
-                          child: DataTable(
-                            columns: [
-                              DataColumn(
-                                  label: Text('Date',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold))),
-                              DataColumn(
-                                  label: Text('Time',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold))),
-                              DataColumn(
-                                  label: Text('Clock',
-                                      style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold))),
-                            ],
-                            rows: [
-                              DataRow(cells: [
-                                DataCell(Text('05-03-2020')),
-                                DataCell(Text('09:00:00')),
-                                DataCell(Text('in')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Text('05-03-2020')),
-                                DataCell(Text('18:00:00')),
-                                DataCell(Text('out')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Text('06-03-2020')),
-                                DataCell(Text('08:57:00')),
-                                DataCell(Text('in')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Text('06-03-2020')),
-                                DataCell(Text('16:20:00')),
-                                DataCell(Text('out')),
-                              ]),
-                              DataRow(cells: [
-                                DataCell(Text('07-03-2020')),
-                                DataCell(Text('08:54:20')),
-                                DataCell(Text('in')),
-                              ]),
-                            ],
+                          child: FutureBuilder(
+                            future: _getMonthlyHistory(),
+                            // ignore: missing_return
+                            builder:
+                                (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.data == null) {
+                                return Padding(
+                                  padding: const EdgeInsets.all(25.0),
+                                  child: SpinKitFadingCircle(
+                                    color: Colors.white,
+                                    size: 50.0,
+                                  ),
+                                );
+                              } else {
+                                return snapshot.data;
+                              }
+                            },
                           ),
                         ),
+                        // Container(
+                        //   margin: EdgeInsets.symmetric(horizontal: 26.0),
+                        //   child: table(),
+                        //   // child: DataTable(
+                        //   //   columns: [
+                        //   //     DataColumn(
+                        //   //         label: Text('Date',
+                        //   //             style: TextStyle(
+                        //   //                 fontSize: 18,
+                        //   //                 fontWeight: FontWeight.bold))),
+                        //   //     DataColumn(
+                        //   //         label: Text('Time',
+                        //   //             style: TextStyle(
+                        //   //                 fontSize: 18,
+                        //   //                 fontWeight: FontWeight.bold))),
+                        //   //     DataColumn(
+                        //   //         label: Text('Clock',
+                        //   //             style: TextStyle(
+                        //   //                 fontSize: 18,
+                        //   //                 fontWeight: FontWeight.bold))),
+                        //   //   ],
+                        //   //   rows: [
+                        //   //     DataRow(cells: [
+                        //   //       DataCell(Text('05-03-2020')),
+                        //   //       DataCell(Text('09:00:00')),
+                        //   //       DataCell(Text('in')),
+                        //   //     ]),
+                        //   //     DataRow(cells: [
+                        //   //       DataCell(Text('05-03-2020')),
+                        //   //       DataCell(Text('18:00:00')),
+                        //   //       DataCell(Text('out')),
+                        //   //     ]),
+                        //   //     DataRow(cells: [
+                        //   //       DataCell(Text('06-03-2020')),
+                        //   //       DataCell(Text('08:57:00')),
+                        //   //       DataCell(Text('in')),
+                        //   //     ]),
+                        //   //     DataRow(cells: [
+                        //   //       DataCell(Text('06-03-2020')),
+                        //   //       DataCell(Text('16:20:00')),
+                        //   //       DataCell(Text('out')),
+                        //   //     ]),
+                        //   //     DataRow(cells: [
+                        //   //       DataCell(Text('07-03-2020')),
+                        //   //       DataCell(Text('08:54:20')),
+                        //   //       DataCell(Text('in')),
+                        //   //     ]),
+                        //   //   ],
+                        //   // ),
+                        // ),
                       ],
                     ),
                   ),
@@ -343,6 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   //   ),
                   // ),
                   // _monthlyHistory(),
+                  // table(),
                 ],
               ),
             ),
@@ -392,63 +423,36 @@ class _HomeScreenState extends State<HomeScreen> {
     ).show();
   }
 
-  _monthlyHistory() {
-    return _monthlyHistoryData();
-  }
+  // --use this future builder to get data from future
+  Future<DataTable> _getMonthlyHistory() async {
+    var data = await Network().apiMonthlyHistory();
 
-  _monthlyHistoryData() async {
-    var result = await Network().apiMonthlyHistory();
-    // result['data'].forEach((element) {
-    //   print(element);
-    // });
-    // return result['data'];
+    // --assign the data into a variable
+    List<DataRow> dataRows = [];
+    for (var m in data['data']) {
+      var dataRow = DataRow(cells: [
+        DataCell(Text(m['mobile_date'])),
+        DataCell(Text(m['mobile_time'])),
+        DataCell(Text(m['clock'])),
+      ]);
 
-    Card data = Card(
-      color: Colors.white.withOpacity(0.6),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20.0, 18.0, 20.0, 5.0),
-            child: Text(
-              'Monthly History',
-              style: TextStyle(fontSize: 30.0),
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 26.0),
-            child: DataTable(
-              columns: [
-                DataColumn(
-                    label: Text('Date',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold))),
-                DataColumn(
-                    label: Text('Time',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold))),
-                DataColumn(
-                    label: Text('Clock',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold))),
-              ],
-              rows: [
-                result['data'].forEach((element) {
-                  print(element);
+      dataRows.add(dataRow);
+    }
 
-                  DataRow(cells: [
-                    DataCell(Text(element['mobile_date'])),
-                    DataCell(Text(element['mobile_time'])),
-                    DataCell(Text(element['clock'])),
-                  ]);
-                }),
-              ],
-            ),
-          ),
-        ],
-      ),
+    // --return to build so that it won't be a future error
+    return DataTable(
+      columns: [
+        DataColumn(
+            label: Text('Date',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Time',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+        DataColumn(
+            label: Text('Clock',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold))),
+      ],
+      rows: dataRows,
     );
-
-    return data;
   }
 }

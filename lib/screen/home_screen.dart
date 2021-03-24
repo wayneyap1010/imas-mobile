@@ -121,21 +121,61 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
-                        child: Text(
-                          'Tan Yap Feng',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 30.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontStyle: FontStyle.italic,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
+                      FutureBuilder(
+                        future: _getUsername(),
+                        // ignore: missing_return
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.data == null) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10.0, 5.0, 10.0, 5.0),
+                              child: Text(
+                                '-',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 30.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            );
+                          } else {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(
+                                  10.0, 5.0, 10.0, 5.0),
+                              child: Text(
+                                snapshot.data,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 30.0,
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontStyle: FontStyle.italic,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            );
+                          }
+                        },
                       ),
+                      // Padding(
+                      //   padding:
+                      //       const EdgeInsets.fromLTRB(10.0, 5.0, 10.0, 5.0),
+                      //   child: Text(
+                      //     username ?? '-',
+                      //     textAlign: TextAlign.center,
+                      //     style: TextStyle(
+                      //       fontSize: 30.0,
+                      //       color: Colors.white,
+                      //       fontWeight: FontWeight.bold,
+                      //       fontStyle: FontStyle.italic,
+                      //       decoration: TextDecoration.underline,
+                      //     ),
+                      //   ),
+                      // ),
                       Padding(
                         padding:
                             const EdgeInsets.fromLTRB(10.0, 18.0, 10.0, 5.0),
@@ -240,15 +280,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       //     ),
                       //     color: Colors.red,
                       //     onPressed: () async {
-                      //       Navigator.push(
-                      //         context,
-                      //         MaterialPageRoute(builder: (context) => Test()),
-                      //       );
-                      //       // var status = await Network().apiMonthlyHistory();
-                      //       // print(status['data']);
-                      //       // setState(() {
-                      //       //   _monthlyHistory();
-                      //       // });
+                      //       SharedPreferences localStorage =
+                      //           await SharedPreferences.getInstance();
+                      //       print(jsonDecode(
+                      //           localStorage.getString('user'))['name']);
                       //     },
                       //   ),
                       // ),
@@ -359,21 +394,6 @@ class _HomeScreenState extends State<HomeScreen> {
                       },
                     ),
                   ),
-                  // Container(
-                  //   width: double.infinity,
-                  //   child: Card(
-                  //     child: Column(
-                  //       mainAxisSize: MainAxisSize.min,
-                  //       children: <Widget>[
-                  //         Image(
-                  //           image: AssetImage('images/quote_image.jpg'),
-                  //         )
-                  //       ],
-                  //     ),
-                  //   ),
-                  // ),
-                  // _monthlyHistory(),
-                  // table(),
                 ],
               ),
             ),
@@ -454,5 +474,11 @@ class _HomeScreenState extends State<HomeScreen> {
       ],
       rows: dataRows,
     );
+  }
+
+  // --retrieve username
+  Future<String> _getUsername() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    return jsonDecode(localStorage.getString('user'))['name'];
   }
 }
